@@ -1,41 +1,45 @@
 box:
-      id: ubuntu
-      tag: 15.10
+      id: dockcross/browser-asmjs
+      tag: latest
 no-response-timeout: 20
 command-timeout: 60
 build:
   steps:
-    - script:
-         name: update apt
-         code: |
-           sudo apt-get update -y
-           sudo apt-get update -y
-           sudo apt-get --no-upgrade install git -y
-           sudo apt-get --no-upgrade install build-essential -y
-           sudo apt-get --no-upgrade install default-jre -y
-           sudo apt-get --no-upgrade install cmake -y
-           sudo apt-get --no-upgrade install g++ -y
-           sudo apt-get --no-upgrade install python -y
-           sudo apt-get --no-upgrade install libtool -y
-           sudo apt-get --no-upgrade install autotools-dev -y
-           sudo apt-get --no-upgrade install automake -y
-           sudo apt-get --no-upgrade install curl -y
-           sudo apt-get --no-upgrade install tar  -y
-           sudo apt-get --no-upgrade install nodejs -y
-    - install-packages:
-        packages: git build-essential default-jre cmake g++ python libtool autotools-dev automake curl tar nodejs
-    - script:
-         name: emsdk
-         code: |
-           curl https://s3.amazonaws.com/mozilla-games/emscripten/releases/emsdk-portable.tar.gz | tar -xz
-           cd emsdk_portable
-           ./emsdk update
-           ./emsdk install latest
-           ./emsdk activate latest
-           source ./emsdk_env.sh
+    #- script:
+    #     name: update apt
+    #     code: |
+    #       sudo apt-get update -y
+    #       sudo apt-get update -y
+    #       sudo apt-get --no-upgrade install git -y
+    #       sudo apt-get --no-upgrade install build-essential -y
+    #       sudo apt-get --no-upgrade install default-jre -y
+    #       sudo apt-get --no-upgrade install cmake -y
+    #       sudo apt-get --no-upgrade install g++ -y
+    #       sudo apt-get --no-upgrade install python -y
+    #       sudo apt-get --no-upgrade install libtool -y
+    #       sudo apt-get --no-upgrade install autotools-dev -y
+    #       sudo apt-get --no-upgrade install automake -y
+    #       sudo apt-get --no-upgrade install curl -y
+    #       sudo apt-get --no-upgrade install tar  -y
+    #       sudo apt-get --no-upgrade install nodejs -y
+    #- install-packages:
+    #    packages: git build-essential default-jre cmake g++ python libtool autotools-dev automake curl tar nodejs
+    #- script:
+    #     name: emsdk
+    #     code: |
+    #       curl https://s3.amazonaws.com/mozilla-games/emscripten/releases/emsdk-portable.tar.gz | tar -xz
+    #       cd emsdk_portable
+    #       ./emsdk update
+    #       ./emsdk install latest
+    #       ./emsdk activate latest
+    #       source ./emsdk_env.sh
     - script:
          name: emsdk use
          code: |
+           docker run --rm dockcross/browser-asmjs > ./dockcross
+           chmod +x ./dockcross
+           mv ./dockcross ~/bin/
+           dockcross bash -c '
            emcc -v
            chmod -R 777 *
            cd freetype-2.6.2
@@ -43,7 +47,7 @@ build:
            emconfigure ./configure
            emmake make
            emcc -I ./include -o freetype.o freetype.c
-           emcc -O3 --llvm-lto 1 -s ALLOW_MEMORY_GROWTH=1 -s NO_EXIT_RUNTIME=1 -s AGGRESSIVE_VARIABLE_ELIMINATION=1 -s NO_DYNAMIC_EXECUTION=1 --memory-init-file 0 -s NO_FILESYSTEM=1 -s NO_BROWSER=1 -s freetype.o objs/.libs/libfreetype.so -o freetype.js
+           emcc -O3 --llvm-lto 1 -s ALLOW_MEMORY_GROWTH=1 -s NO_EXIT_RUNTIME=1 -s AGGRESSIVE_VARIABLE_ELIMINATION=1 -s NO_DYNAMIC_EXECUTION=1 --memory-init-file 0 -s NO_FILESYSTEM=1 -s NO_BROWSER=1 -s freetype.o objs/.libs/libfreetype.so -o freetype.js'
     - script:
          name: github-release
          code: | 
