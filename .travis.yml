@@ -1,0 +1,22 @@
+language: c
+
+services:
+  - docker
+  
+script:
+- docker run --rm dockcross/browser-asmjs > ./dockcross
+- chmod +x ./dockcross
+- mv ./dockcross ~/bin/
+- dockcross bash -c 'emcc -v && hmod -R 777 * && cd freetype-2.6.2 && ./autogen.sh && \        
+           emconfigure ./configure && \
+           emmake make && \
+           emcc -I ./include -o freetype.o freetype.c && \
+           emcc -O3 --llvm-lto 1 -s ALLOW_MEMORY_GROWTH=1 -s NO_EXIT_RUNTIME=1 -s AGGRESSIVE_VARIABLE_ELIMINATION=1 -s NO_DYNAMIC_EXECUTION=1 --memory-init-file 0 -s NO_FILESYSTEM=1 -s NO_BROWSER=1 -s freetype.o objs/.libs/libfreetype.so -o freetype.js'
+#- script:
+#         name: github-release
+#         code: | 
+#           cd freetype-2.6.2
+#           curl -L -k https://github.com/c4milo/github-release/releases/download/v1.0.8/github-release_v1.0.8_linux_amd64.tar.gz | tar -xz
+#           ./github-release ${WERCKER_GIT_OWNER}/${WERCKER_GIT_REPOSITORY} v.${WERCKER_GIT_COMMIT} "master" "FreeType-js for use with libgdx" "freetype.j*"
+#           cd ..
+#           rm -r emsdk_portable # needed, because emscripten is 10gb big and can't be stored
