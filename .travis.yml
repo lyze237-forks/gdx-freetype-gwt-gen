@@ -7,7 +7,7 @@ script:
 - docker run --rm dockcross/browser-asmjs > ./dockcross
 - chmod +x ./dockcross
 - mv ./dockcross ~/bin/
-- dockcross bash -c 'ls -l -a && java --version && apt search openjdk && emcc -v && chmod -R 777 * && cd freetype-2.6.2 && ./autogen.sh && \        
+- dockcross bash -c 'which emvv; which emconfigure && emcc -v && chmod -R 777 * && cd freetype-2.6.2 && ./autogen.sh && \        
            emconfigure ./configure && \
            emmake make && \
            emcc -I ./include -o freetype.o freetype.c && \
