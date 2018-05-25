@@ -7,7 +7,7 @@ script:
 - docker run --rm dockcross/browser-asmjs > ./dockcross
 - chmod +x ./dockcross
 - mv ./dockcross ~/bin/
-- dockcross bash -c 'source emsdk_portable/sdk/emsdk_env.sh; ls -l -a /emsdk_portable/sdk/ && emcc -v && chmod -R 777 * && cd freetype-2.6.2 && ./autogen.sh && \        
+- dockcross bash -c 'source /emsdk_portable/emsdk_env.sh; ls -l -a /emsdk_portable/ && ls -l -a /emsdk_portable/sdk/ && emcc -v && chmod -R 777 * && cd freetype-2.6.2 && ./autogen.sh && \        
            emconfigure ./configure && \
            emmake make && \
            emcc -I ./include -o freetype.o freetype.c && \
