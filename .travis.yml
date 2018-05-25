@@ -11,21 +11,14 @@ script:
 - echo "chmod -R 777 *" >> doBuild.sh
 - echo "cd freetype-2.6.2" >> doBuild.sh
 - echo "./autogen.sh" >> doBuild.sh
-#- s -l -a >> doBuild.sh
-- echo "emconfigure" >> doBuild.sh
 - echo "emconfigure ./configure" >> doBuild.sh
 - echo "emmake make" >> doBuild.sh
 - echo "emcc -I ./include -o freetype.o freetype.c" >> doBuild.sh
-- echo "ls -l -a objs/.libs/" >> doBuild.sh
 - echo "emcc -O3 --llvm-lto 1 -s ALLOW_MEMORY_GROWTH=1 -s NO_EXIT_RUNTIME=1 -s AGGRESSIVE_VARIABLE_ELIMINATION=1 -s NO_DYNAMIC_EXECUTION=1 --memory-init-file 0 -s NO_FILESYSTEM=1 -s NO_BROWSER=1 -s freetype.o objs/.libs/libfreetype.a -o freetype.js" >> doBuild.sh
 - chmod +x doBuild.sh
 - dockcross bash -c './doBuild.sh'
 
-#- script:
-#         name: github-release
-#         code: | 
-#           cd freetype-2.6.2
-#           curl -L -k https://github.com/c4milo/github-release/releases/download/v1.0.8/github-release_v1.0.8_linux_amd64.tar.gz | tar -xz
-#           ./github-release ${WERCKER_GIT_OWNER}/${WERCKER_GIT_REPOSITORY} v.${WERCKER_GIT_COMMIT} "master" "FreeType-js for use with libgdx" "freetype.j*"
-#           cd ..
-#           rm -r emsdk_portable # needed, because emscripten is 10gb big and can't be stored
+after_success:
+- cd freetype-2.6.2
+- curl -L -k https://github.com/c4milo/github-release/releases/download/v1.0.8/github-release_v1.0.8_linux_amd64.tar.gz | tar -xz
+- ./github-release intrigus/gdx-freetype-gwt-gen v.${TRAVIS_COMMIT} "master" "FreeType-js for use with libgdx" "freetype.j*"
