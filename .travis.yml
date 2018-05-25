@@ -7,11 +7,18 @@ script:
 - docker run --rm dockcross/browser-asmjs > ./dockcross
 - chmod +x ./dockcross
 - mv ./dockcross ~/bin/
-- dockcross bash -c 'sudo source /emsdk_portable/emsdk_env.sh; ls -l -a /emsdk_portable/ && ls -l -a /emsdk_portable/sdk/ && emcc -v && chmod -R 777 * && cd freetype-2.6.2 && ./autogen.sh && \        
-           ls -l -a && emconfigure && emconfigure ./configure && \
-           emmake make && \
-           emcc -I ./include -o freetype.o freetype.c && \
-           emcc -O3 --llvm-lto 1 -s ALLOW_MEMORY_GROWTH=1 -s NO_EXIT_RUNTIME=1 -s AGGRESSIVE_VARIABLE_ELIMINATION=1 -s NO_DYNAMIC_EXECUTION=1 --memory-init-file 0 -s NO_FILESYSTEM=1 -s NO_BROWSER=1 -s freetype.o objs/.libs/libfreetype.so -o freetype.js'
+- emcc -v >> doBuild.sh
+- chmod -R 777 * >> doBuild.sh
+- cd freetype-2.6.2 >> doBuild.sh
+- ./autogen.sh >> doBuild.sh
+#- s -l -a >> doBuild.sh
+- emconfigure >> doBuild.sh
+- emconfigure ./configure >> doBuild.sh
+- emmake make  >> doBuild.sh
+- emcc -I ./include -o freetype.o freetype.c  >> doBuild.sh
+- emcc -O3 --llvm-lto 1 -s ALLOW_MEMORY_GROWTH=1 -s NO_EXIT_RUNTIME=1 -s AGGRESSIVE_VARIABLE_ELIMINATION=1 -s NO_DYNAMIC_EXECUTION=1 --memory-init-file 0 -s NO_FILESYSTEM=1 -s NO_BROWSER=1 -s freetype.o objs/.libs/libfreetype.so -o freetype.js >> doBuild.sh
+- dockcross bash -c './doBuild.sh'
+
 #- script:
 #         name: github-release
 #         code: | 
