@@ -14,7 +14,7 @@ script:
 - echo "emconfigure ./configure" >> doBuild.sh
 - echo "emmake make" >> doBuild.sh
 - echo "emcc -I ./include -o freetype.o freetype.c" >> doBuild.sh
-- echo "emcc -O3 --llvm-lto 1 -s ALLOW_MEMORY_GROWTH=1 -s 'EXTRA_EXPORTED_RUNTIME_METHODS=["writeArrayToMemory"]' -s NO_EXIT_RUNTIME=1 -s AGGRESSIVE_VARIABLE_ELIMINATION=1 -s NO_DYNAMIC_EXECUTION=1 --memory-init-file 0 -s NO_FILESYSTEM=1 -s NO_BROWSER=1 -s freetype.o objs/.libs/libfreetype.a -o freetype.js" >> doBuild.sh
+- echo "emcc -O3 --llvm-lto 1 -s ALLOW_MEMORY_GROWTH=1 -s 'EXTRA_EXPORTED_RUNTIME_METHODS=[\"writeArrayToMemory\"]' -s NO_EXIT_RUNTIME=1 -s AGGRESSIVE_VARIABLE_ELIMINATION=1 -s NO_DYNAMIC_EXECUTION=1 --memory-init-file 0 -s NO_FILESYSTEM=1 -s NO_BROWSER=1 -s freetype.o objs/.libs/libfreetype.a -o freetype.js" >> doBuild.sh
 - chmod +x doBuild.sh
 - dockcross bash -c './doBuild.sh'
 
