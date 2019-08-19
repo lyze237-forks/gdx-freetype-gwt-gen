@@ -2,21 +2,14 @@ language: c
 
 services:
   - docker
-  
+
 script:
-- docker run --rm dockcross/browser-asmjs > ./dockcross
+- docker run --rm dockcross/web-wasm > ./dockcross
 - chmod +x ./dockcross
 - mv ./dockcross ~/bin/
-- echo "emcc -v" >> doBuild.sh
-- echo "chmod -R 777 *" >> doBuild.sh
-- echo "cd freetype-2.9.1" >> doBuild.sh
-- echo "./autogen.sh" >> doBuild.sh
-- echo "emconfigure ./configure" >> doBuild.sh
-- echo "emmake make" >> doBuild.sh
-- echo "emcc -I ./include -o ../freetype.o ../freetype.c" >> doBuild.sh
-- echo "emcc -O3 --llvm-lto 1 -s ALLOW_MEMORY_GROWTH=1 -s 'EXTRA_EXPORTED_RUNTIME_METHODS=[\"writeArrayToMemory\"]' -s NO_EXIT_RUNTIME=1 -s AGGRESSIVE_VARIABLE_ELIMINATION=1 -s NO_DYNAMIC_EXECUTION=1 --memory-init-file 0 -s NO_FILESYSTEM=1 -s NO_BROWSER=1 -s ../freetype.o objs/.libs/libfreetype.a -o ../freetype.js" >> doBuild.sh
 - chmod +x doBuild.sh
-- dockcross bash -c './doBuild.sh'
+- sudo apt-get install -y zlib1g-dev
+- dockcross bash -c 'sudo apt-get install -y zlib1g-dev && ./doBuild.sh'
 
 after_success:
 - curl -L -k https://github.com/c4milo/github-release/releases/download/v1.0.8/github-release_v1.0.8_linux_amd64.tar.gz | tar -xz
