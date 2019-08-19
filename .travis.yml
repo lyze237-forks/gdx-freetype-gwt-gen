@@ -9,7 +9,7 @@ script:
 - mv ./dockcross ~/bin/
 - echo "emcc -v" >> doBuild.sh
 - echo "chmod -R 777 *" >> doBuild.sh
-- echo "cd freetype-2.6.2" >> doBuild.sh
+- echo "cd freetype-2.9.1" >> doBuild.sh
 - echo "./autogen.sh" >> doBuild.sh
 - echo "emconfigure ./configure" >> doBuild.sh
 - echo "emmake make" >> doBuild.sh
@@ -19,6 +19,6 @@ script:
 - dockcross bash -c './doBuild.sh'
 
 after_success:
-- cd freetype-2.6.2
+- cd freetype-2.9.1
 - curl -L -k https://github.com/c4milo/github-release/releases/download/v1.0.8/github-release_v1.0.8_linux_amd64.tar.gz | tar -xz
 - ./github-release intrigus/gdx-freetype-gwt-gen v.${TRAVIS_COMMIT} "master" "FreeType-js for use with libgdx" "freetype.j*"
