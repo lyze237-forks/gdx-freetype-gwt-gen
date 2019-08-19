@@ -13,12 +13,11 @@ script:
 - echo "./autogen.sh" >> doBuild.sh
 - echo "emconfigure ./configure" >> doBuild.sh
 - echo "emmake make" >> doBuild.sh
-- echo "emcc -I ./include -o freetype.o freetype.c" >> doBuild.sh
-- echo "emcc -O3 --llvm-lto 1 -s ALLOW_MEMORY_GROWTH=1 -s 'EXTRA_EXPORTED_RUNTIME_METHODS=[\"writeArrayToMemory\"]' -s NO_EXIT_RUNTIME=1 -s AGGRESSIVE_VARIABLE_ELIMINATION=1 -s NO_DYNAMIC_EXECUTION=1 --memory-init-file 0 -s NO_FILESYSTEM=1 -s NO_BROWSER=1 -s freetype.o objs/.libs/libfreetype.a -o freetype.js" >> doBuild.sh
+- echo "emcc -I ./include -o ../freetype.o ../freetype.c" >> doBuild.sh
+- echo "emcc -O3 --llvm-lto 1 -s ALLOW_MEMORY_GROWTH=1 -s 'EXTRA_EXPORTED_RUNTIME_METHODS=[\"writeArrayToMemory\"]' -s NO_EXIT_RUNTIME=1 -s AGGRESSIVE_VARIABLE_ELIMINATION=1 -s NO_DYNAMIC_EXECUTION=1 --memory-init-file 0 -s NO_FILESYSTEM=1 -s NO_BROWSER=1 -s ../freetype.o objs/.libs/libfreetype.a -o ../freetype.js" >> doBuild.sh
 - chmod +x doBuild.sh
 - dockcross bash -c './doBuild.sh'
 
 after_success:
-- cd freetype-2.9.1
 - curl -L -k https://github.com/c4milo/github-release/releases/download/v1.0.8/github-release_v1.0.8_linux_amd64.tar.gz | tar -xz
 - ./github-release intrigus/gdx-freetype-gwt-gen v.${TRAVIS_COMMIT} "master" "FreeType-js for use with libgdx" "freetype.j*"
