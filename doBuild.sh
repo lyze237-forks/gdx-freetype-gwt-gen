@@ -1,16 +1,5 @@
 #!/bin/bash
 
-#cp -r freetype-2.9.1 freetype-2.9.1-native
-#cd freetype-2.9.1-native
-#./autogen.sh
-#./configure
-#make
-#cd ..
-#cp freetype-2.9.1-native/objs/apinames freetype-2.9.1/objs/apinames
-#rm -r freetype-2.9.1-native
-#export CCexe=gcc
-#export CC_BUILD=gcc
-#unset CC CXX
 cd freetype-2.9.1
 ./autogen.sh
 emconfigure ./configure --host=asmjs --build=$(uname -m)
