@@ -2,234 +2,261 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 #include FT_STROKER_H
-void __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Library_doneFreeType(long library) {
+
+#define jint int32_t
+
+static jint lastError = 0;
+
+jint __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_FreeType_getLastErrorCode() {
+    return lastError;
+}
+
+void __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Library_doneFreeType(jint library) {
     FT_Done_FreeType((FT_Library)library);
 }
-long __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Library_newMemoryFace(long library, long data, int dataSize, int faceIndex) {
+jint __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Library_newMemoryFace(jint library, jint data, jint dataSize, jint faceIndex) {
     FT_Face face = 0;
     FT_Error error = FT_New_Memory_Face((FT_Library)library, (FT_Byte*)data, dataSize, faceIndex, &face);
-    if(error) return 0;
-    else return (long)face;
+    if(error) {
+        lastError = error;
+        return 0;
+    }
+    else return (jint)face;
 }
-long __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Library_strokerNew(long library) {
+jint __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Library_strokerNew(jint library) {
     FT_Stroker stroker;
     FT_Error error = FT_Stroker_New((FT_Library)library, &stroker);
-    if(error) return 0;
-    else return (long)stroker;
+    if(error) {
+        lastError = error;
+        return 0;
+    }
+    else return (jint)stroker;
 }
-void __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Face_doneFace(long face) {
+void __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Face_doneFace(jint face) {
     FT_Done_Face((FT_Face)face);
 }
-int __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Face_getFaceFlags(long face) {
+jint __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Face_getFaceFlags(jint face) {
     return ((FT_Face)face)->face_flags;
 }
-int __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Face_getStyleFlags(long face) {
+jint __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Face_getStyleFlags(jint face) {
     return ((FT_Face)face)->style_flags;
 }
-int __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Face_getNumGlyphs(long face) {
+jint __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Face_getNumGlyphs(jint face) {
     return ((FT_Face)face)->num_glyphs;
 }
-int __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Face_getAscender(long face) {
+jint __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Face_getAscender(jint face) {
     return ((FT_Face)face)->ascender;
 }
-int __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Face_getDescender(long face) {
+jint __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Face_getDescender(jint face) {
     return ((FT_Face)face)->descender;
 }
-int __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Face_getHeight(long face) {
+jint __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Face_getHeight(jint face) {
     return ((FT_Face)face)->height;
 }
-int __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Face_getMaxAdvanceWidth(long face) {
+jint __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Face_getMaxAdvanceWidth(jint face) {
     return ((FT_Face)face)->max_advance_width;
 }
-int __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Face_getMaxAdvanceHeight(long face) {
+jint __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Face_getMaxAdvanceHeight(jint face) {
     return ((FT_Face)face)->max_advance_height;
 }
-int __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Face_getUnderlinePosition(long face) {
+jint __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Face_getUnderlinePosition(jint face) {
     return ((FT_Face)face)->underline_position;
 }
-int __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Face_getUnderlineThickness(long face) {
+jint __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Face_getUnderlineThickness(jint face) {
     return ((FT_Face)face)->underline_thickness;
 }
-int __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Face_selectSize(long face, int strike_index) {
+jint __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Face_selectSize(jint face, jint strike_index) {
     return !FT_Select_Size((FT_Face)face, strike_index);
 }
-int __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Face_setCharSize(long face, int charWidth, int charHeight, int horzResolution, int vertResolution) {
+jint __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Face_setCharSize(jint face, jint charWidth, jint charHeight, jint horzResolution, jint vertResolution) {
     return !FT_Set_Char_Size((FT_Face)face, charWidth, charHeight, horzResolution, vertResolution);
 }
-int __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Face_setPixelSizes(long face, int pixelWidth, int pixelHeight) {
+jint __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Face_setPixelSizes(jint face, jint pixelWidth, jint pixelHeight) {
     return !FT_Set_Pixel_Sizes((FT_Face)face, pixelWidth, pixelHeight);
 }
-int __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Face_loadGlyph(long face, int glyphIndex, int loadFlags) {
+jint __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Face_loadGlyph(jint face, jint glyphIndex, jint loadFlags) {
     return !FT_Load_Glyph((FT_Face)face, glyphIndex, loadFlags);
 }
-int __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Face_loadChar(long face, int charCode, int loadFlags) {
+jint __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Face_loadChar(jint face, jint charCode, jint loadFlags) {
     return !FT_Load_Char((FT_Face)face, charCode, loadFlags);
 }
-long __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Face_getGlyph(long face) {
-    return (long)((FT_Face)face)->glyph;
+jint __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Face_getGlyph(jint face) {
+    return (jint)((FT_Face)face)->glyph;
 }
-long __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Face_getSize(long face) {
-    return (long)((FT_Face)face)->size;
+jint __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Face_getSize(jint face) {
+    return (jint)((FT_Face)face)->size;
 }
-int __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Face_hasKerning(long face) {
+jint __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Face_hasKerning(jint face) {
     return FT_HAS_KERNING(((FT_Face)face));
 }
-int __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Face_getKerning(long face, int leftGlyph, int rightGlyph, int kernMode) {
+jint __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Face_getKerning(jint face, jint leftGlyph, jint rightGlyph, jint kernMode) {
     FT_Vector kerning;
     FT_Error error = FT_Get_Kerning((FT_Face)face, leftGlyph, rightGlyph, kernMode, &kerning);
-    if(error) return 0;
+    if(error) {
+        lastError = error;
+        return 0;
+    }
     return kerning.x;
 }
-int __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Face_getCharIndex(long face, int charCode) {
+jint __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Face_getCharIndex(jint face, jint charCode) {
     return FT_Get_Char_Index((FT_Face)face, charCode);
 }
-long __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Size_getMetrics(long address) {
-    return (long)&((FT_Size)address)->metrics;
+jint __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Size_getMetrics(jint address) {
+    return (jint)&((FT_Size)address)->metrics;
 }
-int __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_SizeMetrics_getXppem(long metrics) {
+jint __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_SizeMetrics_getXppem(jint metrics) {
     return ((FT_Size_Metrics*)metrics)->x_ppem;
 }
-int __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_SizeMetrics_getYppem(long metrics) {
+jint __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_SizeMetrics_getYppem(jint metrics) {
     return ((FT_Size_Metrics*)metrics)->y_ppem;
 }
-int __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_SizeMetrics_getXscale(long metrics) {
+jint __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_SizeMetrics_getXscale(jint metrics) {
     return ((FT_Size_Metrics*)metrics)->x_scale;
 }
-int __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_SizeMetrics_getYscale(long metrics) {
+jint __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_SizeMetrics_getYscale(jint metrics) {
     return ((FT_Size_Metrics*)metrics)->x_scale;
 }
-int __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_SizeMetrics_getAscender(long metrics) {
+jint __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_SizeMetrics_getAscender(jint metrics) {
     return ((FT_Size_Metrics*)metrics)->ascender;
 }
-int __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_SizeMetrics_getDescender(long metrics) {
+jint __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_SizeMetrics_getDescender(jint metrics) {
     return ((FT_Size_Metrics*)metrics)->descender;
 }
-int __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_SizeMetrics_getHeight(long metrics) {
+jint __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_SizeMetrics_getHeight(jint metrics) {
     return ((FT_Size_Metrics*)metrics)->height;
 }
-int __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_SizeMetrics_getMaxAdvance(long metrics) {
+jint __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_SizeMetrics_getMaxAdvance(jint metrics) {
     return ((FT_Size_Metrics*)metrics)->max_advance;
 }
-long __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_GlyphSlot_getMetrics(long slot) {
-    return (long)&((FT_GlyphSlot)slot)->metrics;
+jint __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_GlyphSlot_getMetrics(jint slot) {
+    return (jint)&((FT_GlyphSlot)slot)->metrics;
 }
-int __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_GlyphSlot_getLinearHoriAdvance(long slot) {
+jint __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_GlyphSlot_getLinearHoriAdvance(jint slot) {
     return ((FT_GlyphSlot)slot)->linearHoriAdvance;
 }
-int __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_GlyphSlot_getLinearVertAdvance(long slot) {
+jint __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_GlyphSlot_getLinearVertAdvance(jint slot) {
     return ((FT_GlyphSlot)slot)->linearVertAdvance;
 }
-int __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_GlyphSlot_getAdvanceX(long slot) {
+jint __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_GlyphSlot_getAdvanceX(jint slot) {
     return ((FT_GlyphSlot)slot)->advance.x;
 }
-int __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_GlyphSlot_getAdvanceY(long slot) {
+jint __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_GlyphSlot_getAdvanceY(jint slot) {
     return ((FT_GlyphSlot)slot)->advance.y;
 }
-int __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_GlyphSlot_getFormat(long slot) {
+jint __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_GlyphSlot_getFormat(jint slot) {
     return ((FT_GlyphSlot)slot)->format;
 }
-long __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_GlyphSlot_getBitmap(long slot) {
+jint __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_GlyphSlot_getBitmap(jint slot) {
     FT_GlyphSlot glyph = ((FT_GlyphSlot)slot);
-    return (long)&(glyph->bitmap);
+    return (jint)&(glyph->bitmap);
 }
-int __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_GlyphSlot_getBitmapLeft(long slot) {
+jint __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_GlyphSlot_getBitmapLeft(jint slot) {
     return ((FT_GlyphSlot)slot)->bitmap_left;
 }
-int __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_GlyphSlot_getBitmapTop(long slot) {
+jint __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_GlyphSlot_getBitmapTop(jint slot) {
     return ((FT_GlyphSlot)slot)->bitmap_top;
 }
-int __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_GlyphSlot_renderGlyph(long slot, int renderMode) {
+jint __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_GlyphSlot_renderGlyph(jint slot, jint renderMode) {
     return !FT_Render_Glyph((FT_GlyphSlot)slot, (FT_Render_Mode)renderMode);
 }
-long __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_GlyphSlot_getGlyph(long glyphSlot) {
+jint __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_GlyphSlot_getGlyph(jint glyphSlot) {
     FT_Glyph glyph;
     FT_Error error = FT_Get_Glyph((FT_GlyphSlot)glyphSlot, &glyph);
-    if(error) return 0;
-    else return (long)glyph;
+    if(error) {
+        lastError = error;
+        return 0;
+    }
+    else return (jint)glyph;
 }
-void __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Glyph_done(long glyph) {
+void __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Glyph_done(jint glyph) {
     FT_Done_Glyph((FT_Glyph)glyph);
 }
-long __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Glyph_strokeBorder(long glyph, long stroker, int inside) {
+jint __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Glyph_strokeBorder(jint glyph, jint stroker, jint inside) {
     FT_Glyph border_glyph = (FT_Glyph)glyph;
     FT_Glyph_StrokeBorder(&border_glyph, (FT_Stroker)stroker, inside, 1);
-    return (long)border_glyph;
+    return (jint)border_glyph;
 }
-long __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Glyph_toBitmap(long glyph, int renderMode) {
+jint __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Glyph_toBitmap(jint glyph, jint renderMode) {
     FT_Glyph bitmap = (FT_Glyph)glyph;
     FT_Error error = FT_Glyph_To_Bitmap(&bitmap, (FT_Render_Mode)renderMode, NULL, 1);
-    if(error) return 0;
-    return (long)bitmap;
+    if(error) {
+        lastError = error;
+        return 0;
+    }
+    return (jint)bitmap;
 }
-long __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Glyph_getBitmap(long glyph) {
+jint __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Glyph_getBitmap(jint glyph) {
     FT_BitmapGlyph glyph_bitmap = ((FT_BitmapGlyph)glyph);
-    return (long)&(glyph_bitmap->bitmap);
+    return (jint)&(glyph_bitmap->bitmap);
 }
-int __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Glyph_getLeft(long glyph) {
+jint __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Glyph_getLeft(jint glyph) {
     FT_BitmapGlyph glyph_bitmap = ((FT_BitmapGlyph)glyph);
     return glyph_bitmap->left;
 }
-int __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Glyph_getTop(long glyph) {
+jint __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Glyph_getTop(jint glyph) {
     FT_BitmapGlyph glyph_bitmap = ((FT_BitmapGlyph)glyph);
     return glyph_bitmap->top;
 }
-int __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Bitmap_getRows(long bitmap) {
+jint __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Bitmap_getRows(jint bitmap) {
     return ((FT_Bitmap*)bitmap)->rows;
 }
-int __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Bitmap_getWidth(long bitmap) {
+jint __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Bitmap_getWidth(jint bitmap) {
     return ((FT_Bitmap*)bitmap)->width;
 }
-int __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Bitmap_getPitch(long bitmap) {
+jint __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Bitmap_getPitch(jint bitmap) {
     return ((FT_Bitmap*)bitmap)->pitch;
 }
-long __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Bitmap_getBufferAddress(long bitmap) {
+jint __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Bitmap_getBufferAddress(jint bitmap) {
     FT_Bitmap* bmp = (FT_Bitmap*)bitmap;
-	return (long)bmp->buffer;
+	return (jint)bmp->buffer;
     //return env->NewDirectByteBuffer((void*)bmp->buffer, bmp->rows * abs(bmp->pitch));
 }
-long __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Bitmap_getBufferSize(long bitmap) {
+jint __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Bitmap_getBufferSize(jint bitmap) {
     FT_Bitmap* bmp = (FT_Bitmap*)bitmap;
-	return (long)bmp->rows * abs(bmp->pitch) * bmp->width;
+	return (jint)bmp->rows * abs(bmp->pitch) * bmp->width;
 }
-int __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Bitmap_getNumGray(long bitmap) {
+jint __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Bitmap_getNumGray(jint bitmap) {
     return ((FT_Bitmap*)bitmap)->num_grays;
 }
-int __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Bitmap_getPixelMode(long bitmap) {
+jint __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Bitmap_getPixelMode(jint bitmap) {
     return ((FT_Bitmap*)bitmap)->pixel_mode;
 }
-int __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_GlyphMetrics_getWidth(long metrics) {
+jint __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_GlyphMetrics_getWidth(jint metrics) {
     return ((FT_Glyph_Metrics*)metrics)->width;
 }
-int __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_GlyphMetrics_getHeight(long metrics) {
+jint __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_GlyphMetrics_getHeight(jint metrics) {
     return ((FT_Glyph_Metrics*)metrics)->height;
 }
-int __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_GlyphMetrics_getHoriBearingX(long metrics) {
+jint __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_GlyphMetrics_getHoriBearingX(jint metrics) {
     return ((FT_Glyph_Metrics*)metrics)->horiBearingX;
 }
-int __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_GlyphMetrics_getHoriBearingY(long metrics) {
+jint __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_GlyphMetrics_getHoriBearingY(jint metrics) {
     return ((FT_Glyph_Metrics*)metrics)->horiBearingY;
 }
-int __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_GlyphMetrics_getHoriAdvance(long metrics) {
+jint __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_GlyphMetrics_getHoriAdvance(jint metrics) {
     return ((FT_Glyph_Metrics*)metrics)->horiAdvance;
 }
-int __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_GlyphMetrics_getVertBearingX(long metrics) {
+jint __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_GlyphMetrics_getVertBearingX(jint metrics) {
     return ((FT_Glyph_Metrics*)metrics)->vertBearingX;
 }
-int __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_GlyphMetrics_getVertBearingY(long metrics) {
+jint __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_GlyphMetrics_getVertBearingY(jint metrics) {
     return ((FT_Glyph_Metrics*)metrics)->vertBearingY;
 }
-int __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_GlyphMetrics_getVertAdvance(long metrics) {
+jint __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_GlyphMetrics_getVertAdvance(jint metrics) {
     return ((FT_Glyph_Metrics*)metrics)->vertAdvance;
 }
-void __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Stroker_set(long stroker, int radius, int lineCap, int lineJoin, int miterLimit) {
+void __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Stroker_set(jint stroker, jint radius, jint lineCap, jint lineJoin, jint miterLimit) {
     FT_Stroker_Set((FT_Stroker)stroker, radius, (FT_Stroker_LineCap)lineCap, (FT_Stroker_LineJoin)lineJoin, miterLimit);
 }
-void __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Stroker_done(long stroker) {
+void __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_Stroker_done(jint stroker) {
     FT_Stroker_Done((FT_Stroker)stroker);
 }
-long __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_FreeType_initFreeTypeJni() {
+jint __attribute__((used)) EMSCRIPTEN_KEEPALIVE c_FreeType_initFreeTypeJni() {
     FT_Library library = 0;
     FT_Error error = FT_Init_FreeType(&library);
-    if(error) return 0;
-    else return (long)library;
+    if(error) {
+        lastError = error;
+        return 0;
+    }
+    else return (jint)library;
 }
