@@ -1,0 +1,21 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - run: docker run --rm dockcross/web-wasm > ./dockcross
+      - run: chmod +x ./dockcross
+      - run: mv ./dockcross ~/bin/
+      - run: chmod +x doBuild.sh
+      - run: dockcross bash -c './doBuild.sh'
+      - run: ls freetype.j*
