@@ -15,7 +15,6 @@ jobs:
 
       - run: docker run --rm dockcross/web-wasm > ./dockcross
       - run: chmod +x ./dockcross
-      - run: mv ./dockcross ~/bin/
       - run: chmod +x doBuild.sh
-      - run: dockcross bash -c './doBuild.sh'
+      - run: ./dockcross bash -c './doBuild.sh'
       - run: ls freetype.j*
